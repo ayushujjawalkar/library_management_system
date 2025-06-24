@@ -14,32 +14,67 @@ public class BookController
     @Autowired
     private BookService bookService;
 
-    @GetMapping
-    List<Book> getAllBooks ()
-    {
+//    @GetMapping
+//    List<Book> getAllBooks ()
+//    {
+//        return bookService.findAll();
+//    }
+
+    @GetMapping("/all")
+    public List<Book> getAllBooks() {
         return bookService.findAll();
     }
+
     @GetMapping("/{id}")
     public Book getBook(@PathVariable Long id)
     {
         return bookService.findById(id);
     }
-    @PostMapping
-    public Book addBook(@RequestBody Book book)
-    {
+//    @PostMapping
+//    public Book addBook(@RequestBody Book book)
+//    {
+//        return bookService.save(book);
+//    }
+
+    @PostMapping("/addBook")
+    public Book addBook(@RequestBody Book book) {
         return bookService.save(book);
     }
+
     @PutMapping("/{id}")
     public Book updateBook(@PathVariable Long id, @RequestBody Book book)
     {
         // Additional logic to ensure you're updating the correct book
         return bookService.save(book);
     }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<String> deleteBook(@PathVariable Long id) {
+//        try {
+//            System.out.println("Received DELETE request for book ID: " + id + " (Type: " + id.getClass() + ")");
+//            bookService.deleteById(id);
+//            return ResponseEntity.ok("Book deleted successfully");
+//        } catch (IllegalArgumentException e) {
+//            System.out.println("Delete failed: " + e.getMessage());
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        } catch (Exception e) {
+//            System.out.println("Unexpected error: " + e.getMessage());
+//            return ResponseEntity.status(500).body("Internal server error");
+//        }
+//    }
+
+
     @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Long id)
-    {
-        bookService.deleteById(id);
+    public ResponseEntity<String> deleteBook(@PathVariable Long id) {
+        try {
+            bookService.deleteById(id);
+            return ResponseEntity.ok("Book deleted successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid book ID: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error deleting book: " + e.getMessage());
+        }
     }
+
     @PostMapping("/{bookId}/borrow/{userId}")
     public ResponseEntity<Book> borrowBook(@PathVariable Long bookId, @PathVariable Long userId)
     {

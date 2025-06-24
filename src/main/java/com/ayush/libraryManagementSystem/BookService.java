@@ -27,9 +27,15 @@ public class BookService {
     }
 
     public void deleteById(Long id) {
-        bookRepository.deleteById(id);
-    }
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Book not found with ID: " + id));
 
+        if (book.isBorrowed()) {
+            throw new IllegalArgumentException("Cannot delete a borrowed book");
+        }
+
+        bookRepository.delete(book);
+    }
     public Book borrowBook(Long bookId, Long userId) {
         Book book = findById(bookId);
         User user = userRepository.findById(userId).orElse(null);
