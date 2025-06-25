@@ -33,6 +33,26 @@
     <button onclick="returnBook()">Return</button>
 </section>
 
+<!-- Search Books -->
+<section>
+    <h2>Search Books</h2>
+    <input id="searchInput" placeholder="Enter title or author">
+    <button onclick="searchBooks()">Search</button>
+</section>
+
+<!-- filtering books  -->
+<!-- Filter Books by Status -->
+<section>
+    <h2>Filter by Status</h2>
+    <select id="statusFilter" onchange="filterBooks()">
+        <option value="all">All</option>
+        <option value="borrowed">Borrowed</option>
+        <option value="available">Available</option>
+    </select>
+</section>
+
+
+
 <!-- Book List -->
 <section>
     <h2>All Books</h2>

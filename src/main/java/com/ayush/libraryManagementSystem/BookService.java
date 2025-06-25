@@ -14,6 +14,15 @@ public class BookService {
     @Autowired
     private UserRepository userRepository;
 
+//  this is for search a book by title or author
+    public List<Book> searchBooks(String keyword) {
+        return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(keyword, keyword);
+    }
+
+
+
+
+
     public List<Book> findAll() {
         return bookRepository.findAll();
     }

@@ -61,6 +61,12 @@ public class BookController
 //            return ResponseEntity.status(500).body("Internal server error");
 //        }
 //    }
+     //this is for search a book by title or author
+    @GetMapping("/search")
+    public List<Book> searchBooks(@RequestParam("keyword") String keyword) {
+        return bookService.searchBooks(keyword);
+    }
+
 
 
     @DeleteMapping("/{id}")
@@ -86,12 +92,31 @@ public class BookController
         }
     }
     @PostMapping("/{bookId}/return")
-    public ResponseEntity<Book> returnBook(@PathVariable Long bookId) {
+    public ResponseEntity<Book> returnBook(@PathVariable Long bookId)
+    {
         Book returnedBook = bookService.returnBook(bookId);
         if (returnedBook != null) {
             return ResponseEntity.ok(returnedBook);
         } else {
             return ResponseEntity.badRequest().build(); // or a more descriptive error response
         }
+    }
+
+    //filter book  by status
+    @GetMapping("/filter")
+    public List<Book> filterBooks(@RequestParam String status) {
+        List<Book> allBooks = bookService.findAll();
+
+        if ("borrowed".equalsIgnoreCase(status)) {
+            return allBooks.stream()
+                    .filter(Book::isBorrowed)
+                    .toList();
+        } else if ("available".equalsIgnoreCase(status)) {
+            return allBooks.stream()
+                    .filter(book -> !book.isBorrowed())
+                    .toList();
+        }
+
+        return allBooks;
     }
 }

@@ -191,7 +191,8 @@ async function borrowBook() {
 }
 
 // Return book with error handling
-async function returnBook() {
+async function returnBook()
+ {
     try {
         const bookId = document.getElementById('borrowBookId').value.trim();
 
@@ -213,5 +214,57 @@ async function returnBook() {
     } catch (error) {
         console.error('Error returning book:', error);
         alert(error.message);
+    }
+}
+
+//new for search book with author or title
+// 🔍 Search books by title/author
+async function searchBooks() {
+    const keyword = document.getElementById("searchInput").value.trim();
+    if (!keyword) {
+        loadBooks(); // reload all if search is empty
+        return;
+    }
+
+    try {
+        const res = await fetch(`${baseUrl}/api/books/search?keyword=${encodeURIComponent(keyword)}`);
+        const books = await res.json();
+        renderBooks(books);
+    } catch (error) {
+        console.error("Search failed:", error);
+    }
+}
+
+
+// 🧩 Reusable render function
+function renderBooks(books)
+{
+    document.getElementById("bookList").innerHTML = books.map(book => `
+        <div class="book">
+            <strong>${book.title}</strong> by ${book.author}
+            <br>Book ID: ${book.id}
+            <br>Status: ${book.borrowed ? 'Borrowed by User ' + (book.borrowedBy?.id ?? '?') : 'Available'}
+            <br>
+            <button class="delete-btn" data-id="${book.id}">Delete</button>
+        </div>
+    `).join('');
+}
+
+//filtering book function
+async function filterBooks() {
+    const filter = document.getElementById("statusFilter").value;
+
+    try {
+        let res;
+        if (filter === "all") {
+            res = await fetch(`${baseUrl}/api/books`);
+        } else {
+            res = await fetch(`${baseUrl}/api/books/filter?status=${filter}`);
+        }
+
+        const books = await res.json();
+        renderBooks(books);
+    } catch (error) {
+        console.error("Filter request failed:", error);
     }
 }
