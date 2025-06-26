@@ -28,13 +28,51 @@ document.addEventListener('click', function(e) {
     }
 });
 // Add user with validation and error handling
+//async function addUser() {
+//    try {
+//        const name = document.getElementById('userName').value.trim();
+//        const email = document.getElementById('userEmail').value.trim();
+//
+//        if (!name || !email) {
+//            throw new Error('Name and email are required');
+//        }
+//
+//        const response = await fetch(`${baseUrl}/api/users`, {
+//            method: 'POST',
+//            headers: { 'Content-Type': 'application/json' },
+//            body: JSON.stringify({ name, email })
+//        });
+//
+//        if (!response.ok) {
+//            const error = await response.json();
+//            throw new Error(error.message || 'Failed to add user');
+//        }
+//
+//        await loadUsers();
+//        // Clear form fields after successful addition
+//        document.getElementById('userName').value = '';
+//        document.getElementById('userEmail').value = '';
+//    } catch (error) {
+//        console.error('Error adding user:', error);
+//        alert(error.message);
+//    }
+//}
+
+
 async function addUser() {
     try {
         const name = document.getElementById('userName').value.trim();
         const email = document.getElementById('userEmail').value.trim();
 
+        // 🛑 Check if fields are empty
         if (!name || !email) {
             throw new Error('Name and email are required');
+        }
+
+        // ✅ Email validation using regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw new Error('Please enter a valid email address (e.g., user@example.com)');
         }
 
         const response = await fetch(`${baseUrl}/api/users`, {
@@ -49,9 +87,11 @@ async function addUser() {
         }
 
         await loadUsers();
+
         // Clear form fields after successful addition
         document.getElementById('userName').value = '';
         document.getElementById('userEmail').value = '';
+        alert('User added successfully!');
     } catch (error) {
         console.error('Error adding user:', error);
         alert(error.message);
@@ -257,7 +297,7 @@ async function filterBooks() {
     try {
         let res;
         if (filter === "all") {
-            res = await fetch(`${baseUrl}/api/books`);
+            res = await fetch(`${baseUrl}/api/books/all`);
         } else {
             res = await fetch(`${baseUrl}/api/books/filter?status=${filter}`);
         }
