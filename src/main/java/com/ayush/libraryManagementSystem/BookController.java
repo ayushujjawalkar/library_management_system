@@ -30,11 +30,6 @@ public class BookController
     {
         return bookService.findById(id);
     }
-//    @PostMapping
-//    public Book addBook(@RequestBody Book book)
-//    {
-//        return bookService.save(book);
-//    }
 
     @PostMapping("/addBook")
     public Book addBook(@RequestBody Book book) {
